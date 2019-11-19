@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io.connect();
+        var isim = prompt("Lütfen İsiminizi Giriniz");
+        socket.emit("gonder", isim);
+        socket.on("al", function (veri) 
+        {
+            if (veri != isim) {
+                alert(veri + "Sisteme Giriş Yaptı")
+            }
+        })
+    </script>
+    <script type="text/javascript">
+    function yazildi (){
+        var tus = window.event.keyCode;
+        if (tus==13)
+        {
+            var metin = document.getElementById("mesaj").value;
+            socket.emit("mesaj",{"mesaj":metin,"kullanici":isim})
+            document.getElementById("mesaj").value = "";
+        } // Enter
+    }
+    socket.on("mesajAl", function (veri) {
+        if(veri.kullanici != isim) {
+            console.log(veri);
+        document.getElementById("mesajlar").append("Gonderici="+veri.kullanici+"Mesaj="+ veri.mesaj);
+        }
+        
+    })
+    </script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+</head>
+
+<body>
+    <h1>Mesajınızı Yazınız</h1>
+    <input id="mesaj" class="form-control" onkeypress="yazildi()"></input> <br>
+    <button class="btn " onchange="yazildi()">Gonder</button>
+    <div id="mesajlar">
+
+        #text<br>        
+    </div>
+</body>
+</html>
